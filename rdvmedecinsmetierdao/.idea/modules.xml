@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/rdvmedecinsmetierdao.iml" filepath="$PROJECT_DIR$/rdvmedecinsmetierdao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rdvmedecins-metier-dao.iml" filepath="$PROJECT_DIR$/rdvmedecins-metier-dao.iml" />
     </modules>
   </component>
 </project>

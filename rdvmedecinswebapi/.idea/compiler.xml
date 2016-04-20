@@ -22,11 +22,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="rdvmedecinswebapi" />
+        <module name="rdvmedecins-webapi-v1" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="rdvmedecinswebapi" target="1.8" />
+      <module name="rdvmedecins-webapi-v1" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
