@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="rdvmedecins-metier-dao">
+    <output-path>$PROJECT_DIR$/out/artifacts/rdvmedecins_metier_dao</output-path>
+    <root id="archive" name="rdvmedecins-metier-dao.jar" />
+  </artifact>
+</component>
