@@ -52,5 +52,6 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-core:4.2.5.RELEASE" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-test:4.2.5.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: istia.st.spring4.rdvmedecins:rdvmedecins-metier-dao:0.0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="rdvmedecins-metier-dao" level="project" />
   </component>
 </module>

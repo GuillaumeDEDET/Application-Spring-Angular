@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="rdvmedecins-metier-dao">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../rdvmedecinsmetierdao/out/artifacts/rdvmedecins_metier_dao_jar/rdvmedecins-metier-dao.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../rdvmedecinsmetierdao/out/artifacts/rdvmedecins_metier_dao_jar/rdvmedecins-metier-dao.jar!/" />
+    </SOURCES>
+  </library>
+</component>
