@@ -24,6 +24,11 @@ public class UserRole extends AbstractEntity {
     @JoinColumn(name = "ROLE_ID")
     private Role role;
 
+    //constructeur
+    public UserRole(User user, Role role) {
+        this.user = user;
+        this.role = role;
+    }
 
     //getters and setters
     public User getUser() {
