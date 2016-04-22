@@ -6,27 +6,54 @@ angular.module("rdvmedecins", ['ui.bootstrap', 'ngLocale', 'pascalprecht.transla
 angular.module("rdvmedecins").config(['$translateProvider', function ($translateProvider) {
     //messages français
     $translateProvider.translations("fr", {
-        'msg_header': 'Cabinet Médical<br/>Les Médecins Associés',
-        'msg_langues': 'Langues',
-        'msg_agenda': 'Agenda de {{titre}} {{prenom}} {{nom}}<br/>le {{jour}}',
-        'msg_calendrier': 'Calendrier',
-        'msg_jour': 'Jour sélectionné : ',
-        'msg_meteo' : "Aujourd'hui, il va pleuvoir...",
-        'msg_waiting' : "Opération en cours. Patientez...",
-        'msg_cancel' : "Annuler",
-        'msg_waiting_time_text': "Temps d'attente : "
+        msg_header: 'Cabinet Médical<br/>Les Médecins Associés',
+        msg_langues: 'Langues',
+        msg_agenda: 'Agenda de {{titre}} {{prenom}} {{nom}}<br/>le {{jour}}',
+        msg_calendrier: 'Calendrier',
+        msg_jour: 'Jour sélectionné : ',
+        msg_meteo: "Aujourd'hui, il va pleuvoir...",
+        msg_cancel: 'Annuler',
+        msg_waiting: 'Opération en cours. Patientez...',
+        msg_waiting_time_text: "Temps d'attente : ",
+        msg_list_medecins: "Liste des médecins",
+        msg_urlserver_label: "URL du service web : ",
+        msg_login_label: "Login : ",
+        msg_password_label: 'Mot de passe : ',
+        error_unknown: "Erreur non identifiée",
+        not_authorized: "Erreur d'authentification",
+        server_not_available: "Serveur indisponible",
+        msg_get_medecins_errors: "Les erreurs suivantes se sont produites lors du chargement de la liste des médecins",
+        forbidden: "Accès refusé",
+        not_http_error: "L'accès au serveur n'a pu être réalisé. Vérifiez sa disponibilité.",
+        server_url: "URL du serveur",
+        not_found: "Document non trouvé. Vérifiez l'URL du serveur"
+
+
     });
-    //messages anglais
+    // messages anglais
     $translateProvider.translations("en", {
-        'msg_header': 'The Associated Doctors',
-        'msg_langues': 'Languages',
-        'msg_agenda': "{{titre}} {{prenom}} {{nom}}'s Diary <br/> on {{jour}}",
-        'msg_calendrier': 'Calendar',
-        'msg_jour': 'Selected day: ',
-        'msg_meteo': 'Today, it will be raining...',
-        'msg_waiting' : "Operation running. Please waiting...",
-        'msg_cancel' : "Cancel",
-        'msg_waiting_time_text': "Waiting time : "
+        msg_header: 'The Associated Doctors',
+        msg_langues: 'Languages',
+        msg_agenda: "{{titre}} {{prenom}} {{nom}}'s Diary<br/> on {{jour}}",
+        msg_calendrier: 'Calendar',
+        msg_jour: 'Selected day: ',
+        msg_meteo: 'Today, it will be raining...',
+        msg_cancel: 'Cancel',
+        msg_waiting: 'Opération in progress. Please wait...',
+        msg_waiting_time_text: "Waiting time:",
+        msg_list_medecins: "Doctors' list",
+        msg_urlserver_label: "Web service URL:",
+        msg_login_label: "Login:",
+        msg_password_label: 'Password:',
+        error_unknown: "Unknown error",
+        not_authorized: "Authentification failure",
+        server_not_available: "Unavailable server",
+        msg_get_medecins_errors: "Following errors were met while loading the list of doctors.",
+        forbidden: "Access denied",
+        not_http_error: "Server access could not be achieved. Check its availability.",
+        server_url: "Server URL",
+        not_found: "Document not found. Check the server URL"
+
     });
     //langue par défaut
     $translateProvider.preferredLanguage("fr");
@@ -41,7 +68,7 @@ angular.module("rdvmedecins").factory('config', function () {
         waitingTimeText: 'msg_waiting_time_text',
         loadingError: "loading_error",
         canceledOperation: 'canceled_operation',
-        getMedecinsErrors: 'get_medecins_errors',
+        getMedecinsErrors: 'msg_get_medecins_errors',
         getClientsErrors: 'get_clients_errors',
         getAgendaErrors: 'get_agenda_errors',
         selectMedecins: 'select_medecins',
@@ -53,6 +80,10 @@ angular.module("rdvmedecins").factory('config', function () {
         resaTitre: 'resa_titre',
         chooseAClient: 'choose_a_client',
         postResaErrors: 'post_resa_errors',
+        urlServerLabel: 'msg_urlserver_label',
+        loginLabel: 'msg_login_label',
+        passwordLabel: 'msg_password_label',
+        listMedecins: 'msg_list_medecins',
         //urls du client
         urlLogin: "/login",
         urlHome: "/home",
@@ -338,17 +369,136 @@ angular.module("rdvmedecins").factory('utils', ['config', '$timeout', '$q', func
         }, milliseconds);
         //on retourne la tâche
         return task;
-    };
+    }
+
+    // analyse des erreurs dans la réponse du serveur JSON
+    function getErrors(data){
+        // data {err:n, messages:[]}, err!=0
+        // erreurs
+        var errors = [];
+        // code d'erreur
+        var err = data.err;
+        switch (err) {
+            case 2 :
+                //not authorized
+                errors.push('not_authorized');
+                break;
+            case 3 :
+                //forbidden
+                errors.push('forbidden');
+                break;
+            case 4 :
+                //erreur locale
+                errors.push('not_http_error');
+                break;
+            case 6 :
+                // document non trouvé
+                errors.push('not_found');
+                break;
+            default :
+                // autres cas
+                errors = data.messages;
+                break;
+        }
+        //si pas de msg, on en met un
+        if (! errors || errors.length == 0){
+            errors=['error_unknown'];
+        }
+        //on rend la liste des erreurs
+        return errors;
+    }
 
     //instance du service
     return {
         debug: debug,
-        waitForSomeTime: waitForSomeTime
+        waitForSomeTime: waitForSomeTime,
+        getErrors: getErrors
     }
 }]);
 
 //DAO
-angular.module("rdvmedecins").factory('dao', [...]);
+angular.module("rdvmedecins").factory('dao', ['$http', '$q', 'config', '$base64', 'utils',
+    function ($http, $q, config, $base64, utils){
+
+        //logs
+        utils.debug("[dao] init");
+
+        //méthodes privées
+        //obtenir des données auprès du service web
+        function getData(serverUrl, username, password, urlAction, info) {
+            //opération asynchrone
+            var task = $q.defer();
+            //url requête HTTP
+            var url = serverUrl + "/" + urlAction;
+            // authentification basique
+            var basic = "Basic " + $base64.encode(username + ":" + password);
+            // la réponse
+            var reponse;
+            // les requêtes http doivent être toutes authentifiées
+            var headers = $http.defaults.headers.common;
+            headers.Authorization = basic;
+            // on fait la requête HTTP
+            var promise;
+            if(info) {
+                promise = $http.post(url, info, {timeout: config.timeout});
+            } else {
+                promise = $http.get(url, {timeout: config.timeout});
+            }
+            promise.then(success, failure);
+            //on retourne la tâche elle-même afin qu'elle puisse être annulée
+            return task;
+
+            //success
+            function success(response) {
+                //response.data={sataus:0, data:[med1, med2, ...]} ou {status:x, data:[msg1, msg2, ...]
+                utils.debug("[dao] getData[" + urlAction + "] success reponse", response);
+                //réponse
+                var payLoad = response.data;
+                reponse = payLoad.status == 0 ? {err: 0, data: payLoad.data} : {err: 1, messages: payLoad.data};
+                //on rend la réponse
+                task.resolve(reponse);
+            }
+
+            //failure
+            function failure(response){
+                utils.debug("[dao] getData[" + urlAction + "] error reponse", response);
+                // on analyse le status
+                var status = response.status;
+                var error;
+                switch (status){
+                    case 401:
+                        //unauthorized
+                        error = 2;
+                        break;
+                    case 403:
+                        // forbidden
+                        error = 3;
+                        break;
+                    case 404:
+                        // not found
+                        error = 6;
+                        break;
+                    case 0:
+                        // erreur locale
+                        error = 4;
+                        break;
+                    default:
+                        //autre chose
+                        error = 5;
+                }
+                //on rend la réponse
+                task.resolve({err: error, messages: [response.statusText]});
+            }
+        }
+
+        // instance du service [dao]
+        return {
+            getData: getData
+        }
+    }]);
+
+
+
 //contrôleur
 angular.module("rdvmedecins").controller('rdvMedecinsCtrl', ['$scope', 'utils', 'dao', '$translate', 'config',
     function($scope, utils, dao, $translate, config){

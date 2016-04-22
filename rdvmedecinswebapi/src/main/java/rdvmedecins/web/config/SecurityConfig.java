@@ -1,6 +1,7 @@
 package rdvmedecins.web.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -23,12 +24,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(HttpSecurity http) throws Exception{
-        //CSRF
+        // CSRF
         http.csrf().disable();
-        //le mot de passe est transmis par le header Authorization: Basic xxxx
+        // le mot de passe est transmis par le header Authorization: Basic xxxx
         http.httpBasic();
+        // la méthode HTTP OPTIONS doit être autorisée pour tous
+        http.authorizeRequests() //
+                .antMatchers(HttpMethod.OPTIONS, "/", "/**").permitAll();
         // seul le rôle ADMIN peut utiliser l'application
-        http.authorizeRequests()
+        http.authorizeRequests() //
                 .antMatchers("/", "/**") // toutes les URL
                 .hasRole("ADMIN");
     }

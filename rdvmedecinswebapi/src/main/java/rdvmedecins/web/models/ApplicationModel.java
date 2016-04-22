@@ -29,6 +29,8 @@ public class ApplicationModel implements IMetier {
     private List<Client> clients;
     //messages d'erreur
     private List<String> messages;
+    // données provenant de la couche [métier]
+    private boolean CORSneeded = true;
 
     @PostConstruct
     public void init(){
@@ -100,5 +102,9 @@ public class ApplicationModel implements IMetier {
     @Override
     public AgendaMedecinJour getAgendaMedecinJour(long idMedecin, Date jour){
         return metier.getAgendaMedecinJour(idMedecin, jour);
+    }
+
+    public boolean isCORSneeded(){
+        return CORSneeded;
     }
 }

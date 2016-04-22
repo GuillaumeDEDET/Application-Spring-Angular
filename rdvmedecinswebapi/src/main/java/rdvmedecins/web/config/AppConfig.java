@@ -11,5 +11,5 @@ import rdvmedecins.config.DomainAndPersistenceConfig;
 
 @EnableAutoConfiguration
 @ComponentScan(basePackages = { "rdvmedecins.web"})
-@Import({DomainAndPersistenceConfig.class, SecurityConfig.class})
+@Import({DomainAndPersistenceConfig.class, SecurityConfig.class, WebConfig.class})
 public class AppConfig {}

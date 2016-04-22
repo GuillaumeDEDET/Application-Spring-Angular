@@ -14,6 +14,7 @@ import rdvmedecins.web.models.PostSupprimerRv;
 import rdvmedecins.web.models.Reponse;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,6 +30,9 @@ public class RdvMedecinsController {
     private ApplicationModel application;
     private List<String> messages;
 
+    @Autowired
+    private RdvMedecinsCorsController rdvMedecinsCorsController;
+
     @PostConstruct
     public void init(){
         //messages d'erreur de l'application
@@ -37,7 +41,9 @@ public class RdvMedecinsController {
 
     //liste des médecins
     @RequestMapping(value = "/getAllMedecins", method = RequestMethod.GET)
-    public Reponse getAllMedecins(){
+    public Reponse getAllMedecins(HttpServletResponse response){
+        //entête CORS
+        rdvMedecinsCorsController.getAllMedecins(response);
        //état de l'application
         if(messages != null){
             return new Reponse(-1, messages);

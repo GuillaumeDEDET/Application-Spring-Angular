@@ -44,7 +44,7 @@
             <label for="password">{{passwordLabel | translate}}</label>
             <input type="password" id="password" ng-model="server.password"/>
         </div>
-        <button class="btn btn-primary" ng-click="execute()">{{medecins.title | translate:medecins.model}}</button>
+        <button class="btn btn-primary" ng-click="execute()">Liste des médecins</button>
     </div>
 
     <!-- la liste des médecins -->
@@ -57,9 +57,9 @@
 
     <!-- la liste d'erreurs -->
     <div class="alert alert-danger" ng-show="errors.show">
-        {{erros.title|translate:errors.model}}
+        {{errors.title|translate:errors.model}}
         <ul>
-            <li ng-repeat="messages in errors.messages">{{message|translate}}</li>
+            <li ng-repeat="message in errors.messages">{{message|translate}}</li>
         </ul>
     </div>
 
