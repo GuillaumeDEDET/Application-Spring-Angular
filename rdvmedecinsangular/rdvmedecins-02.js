@@ -4,15 +4,19 @@
 
 //module Angular
 angular.module("rdvmedecins", ['ui.bootstrap', 'ngLocale', 'pascalprecht.translate']);
+
+//configuration initiale
 angular.module("rdvmedecins").config(['$translateProvider', function ($translateProvider) {
     //messages français
     $translateProvider.translations("fr", {
-       'msg_header': 'Cabinet Médical<br/>Les Médecins Associés',
+        'msg_header': 'Cabinet Médical<br/>Les Médecins Associés',
         'msg_langues': 'Langues',
         'msg_agenda': 'Agenda de {{titre}} {{prenom}} {{nom}}<br/>le {{jour}}',
         'msg_calendrier': 'Calendrier',
         'msg_jour': 'Jour sélectionné : ',
-        'msg_meteo' : "Aujourd'hui, il va pleuvoir..."
+        'msg_meteo' : "Aujourd'hui, il va pleuvoir...",
+        'msg_waiting' : "Opération en cours. Patientez...",
+        'msg_cancel' : "Annuler"
     });
     //messages anglais
     $translateProvider.translations("en", {
@@ -21,23 +25,54 @@ angular.module("rdvmedecins").config(['$translateProvider', function ($translate
         'msg_agenda': "{{titre}} {{prenom}} {{nom}}'s Diary <br/> on {{jour}}",
         'msg_calendrier': 'Calendar',
         'msg_jour': 'Selected day: ',
-        'msg_meteo': 'Today, it will be raining...'
+        'msg_meteo': 'Today, it will be raining...',
+        'msg_waiting' : "Operation running. Please waiting...",
+        'msg_cancel' : "Cancel"
     });
     //langue par défaut
     $translateProvider.preferredLanguage("fr");
 }]);
 
-//contrôleur
-angular.module("rdvmedecins").controller('rdvMedecinsCtrl', ['$scope', '$locale', '$translate', '$filter',
-    function($scope, $locale, $translate, $filter){
-        //initialisation modèle
-        //datepicker options
-        $scope.options = {
-            minDate: new Date(),
-            showWeeks: true
-        };
-        //locales
-        var locales = {
+//service
+angular.module("rdvmedecins").factory('config', function () {
+    return {
+        //messages à internationaliser
+        msgWaitingInit: "msg_waiting_init",
+        msgWaiting: "msg_waiting",
+        loadingError: "loading_error",
+        canceledOperation: 'canceled_operation',
+        getMedecinsErrors: 'get_medecins_errors',
+        getClientsErrors: 'get_clients_errors',
+        getAgendaErrors: 'get_agenda_errors',
+        selectMedecins: 'select_medecins',
+        identification: 'identification',
+        choixMedecinJourTitle: 'choixmedecinjour_title',
+        agendaTitre: 'agenda_titre',
+        selectClient: 'select_client',
+        postRemoveErrors: 'post_remove_errors',
+        resaTitre: 'resa_titre',
+        chooseAClient: 'choose_a_client',
+        postResaErrors: 'post_resa_errors',
+        //urls du client
+        urlLogin: "/login",
+        urlHome: "/home",
+        urlAgenda: "/agenda",
+        urlResa: "/resa",
+        //urls du serveur
+        urlSvrMedecins: "getAllMedecins",
+        urlSvrClients: "/getAllClients",
+        urlSvrAgenda: "/getAgendaMedecinJour",
+        urlSvrResa: "/reserver",
+        urlSvrResaAdd: "/ajouterRv",
+        urlSvrResaRemove: "/supprimerRv",
+        //délai d'attente maximal pour les appels http en millisecondes
+        timeout: 1000,
+        //temps d'attente avant une tâche
+        waitingTimeBeforeTask: 0,
+        //mode debug
+        debug: true,
+        //le dictionnaire des locales
+        locales: {
             fr: {
                 "DATETIME_FORMATS": {
                     "AMPMS": [
@@ -279,11 +314,27 @@ angular.module("rdvmedecins").controller('rdvMedecinsCtrl', ['$scope', '$locale'
                 "id": "en-us",
                 "localeID": "en_US",
                 "pluralCat": function(n, opt_precision) {  var i = n | 0;  var vf = getVF(n, opt_precision);  if (i == 1 && vf.v == 0) {    return PLURAL_CATEGORY.ONE;  }  return PLURAL_CATEGORY.OTHER;}
-            }};
+            }}
+    };
+});
+
+//contrôleur
+angular.module("rdvmedecins").controller('rdvMedecinsCtrl', ['$scope', '$locale', '$translate', '$filter', 'config',
+    function($scope, $locale, $translate, $filter, config){
+        //initialisation modèle
+        //datepicker options
+        $scope.options = {
+            minDate: new Date(),
+            showWeeks: true
+        };
         //on met par défaut le calendrier en français
-        angular.copy(locales['fr'], $locale);
+        angular.copy(config.locales['fr'], $locale);
         //date d'aujourd'hui
         $scope.jour= new Date();
+        //message d'attente
+        $scope.waiting = {'text': config.msgWaiting, 'visible': false, 'cancel': cancel};
+
+
         //un texte à traduire
         $scope.msg = {'text': 'msg_agenda', 'model': {'titre': 'Mme', 'prenom': 'Laure', 'nom': 'PELISSIER', 'jour': $filter('date')($scope.jour, 'fullDate')}};
         //un autre texte à traduire
@@ -293,7 +344,7 @@ angular.module("rdvmedecins").controller('rdvMedecinsCtrl', ['$scope', '$locale'
         //changement de langue
         $scope.setLang = function (lang) {
             //on change la locale
-            angular.copy(locales[lang], $locale);
+            angular.copy(config.locales[lang], $locale);
             //on met à jour le jour affiché pour forcer le calendrier à changer de locale
             $scope.jour = new Date($scope.jour.getTime());
             //on ferme la liste déroulante
@@ -311,4 +362,10 @@ angular.module("rdvmedecins").controller('rdvMedecinsCtrl', ['$scope', '$locale'
             //modification du jour affiché
             $scope.msg.model.jour = $filter('date')($scope.jour, 'fullDate');
         }
-}]);
+
+        //annulation attente
+        function cancel() {
+            //on cache le msg d'attente
+            $scope.waiting.visible = false;
+        }
+    }]);
