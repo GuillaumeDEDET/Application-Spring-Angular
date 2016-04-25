@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="rdvmedecins">
+<head>
+    <meta charset="UTF-8">
+    <title>RdvMedecins</title>
+    <!-- META -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Angular client for RdvMedecins">
+    <meta name="author" content="Guillaume DEDET">
+    <!-- CSS -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet"/>
+    <link href="bower_components/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet"/>
+    <link href="bower_components/footable/compiled/footable.bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="container" ng-controller="mainCtrl">
+       <!-- la barre de navigation -->
+        <ng-include src="'views/navbar.html'"></ng-include>
+
+        <!--la vue courante -->
+        <ng-view></ng-view>
+    </div>
+</body>
+<!-- Bootstrap core Javascript -->
+<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="bower_components/footable/compiled/footable.min.js"></script>
+<!-- angular js -->
+<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+<script type="text/javascript" src="bower_components/angular-route/angular-route.min.js"></script>
+<script type="text/javascript" src="bower_components/angular-translate/angular-translate.min.js"></script>
+<script type="text/javascript" src="bower_components/angular-base64/angular-base64.min.js"></script>
+
+<!-- le module -->
+<script type="text/javascript" src="modules/rdvmedecins-13.js"></script>
+
+<!-- les controleurs -->
+<script type="text/javascript" src="controllers/mainController.js"></script>
+<script type="text/javascript" src="controllers/page1Controller.js"></script>
+<script type="text/javascript" src="controllers/page2Controller.js"></script>
+<script type="text/javascript" src="controllers/page3Controller.js"></script>
+<script type="text/javascript" src="list2.js"></script>
+<script type="text/javascript" src="errors.js"></script>
+<script type="text/javascript" src="waiting.js"></script>
+</div>
+</html>

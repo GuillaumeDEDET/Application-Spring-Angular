@@ -58,7 +58,9 @@ public class RdvMedecinsController {
 
     //liste des clients
     @RequestMapping(value = "/getAllClients", method = RequestMethod.GET)
-    public Reponse getAllClients(){
+    public Reponse getAllClients(HttpServletResponse response){
+        //entête CORS
+        rdvMedecinsCorsController.getAllClients(response);
         //état de l'application
         if(messages != null){
             return new Reponse(-1, messages);
@@ -248,7 +250,9 @@ public class RdvMedecinsController {
 
     //Un ajout de rdv
     @RequestMapping(value= "/ajouterRv", method = RequestMethod.POST, consumes = "application/json;charset=UTF-8")
-    public Reponse ajouterRv(@RequestBody PostAjouterRv post){
+    public Reponse ajouterRv(@RequestBody PostAjouterRv post, HttpServletResponse response){
+        //entêtes CORS
+        rdvMedecinsCorsController.ajouterRv(response);
         //état de l'application
         if (messages != null){
             return new Reponse(-1, messages);
@@ -292,7 +296,9 @@ public class RdvMedecinsController {
 
     //Une suppression de rdv
     @RequestMapping(value= "/supprimerRv", method = RequestMethod.POST, consumes = "application/json;charset=UTF-8")
-    public Reponse supprimerRv(@RequestBody PostSupprimerRv post){
+    public Reponse supprimerRv(@RequestBody PostSupprimerRv post, HttpServletResponse response){
+        //entêtes CORS
+        rdvMedecinsCorsController.supprimerRv(response);
         //état de l'application
         if (messages != null){
             return new Reponse(-1, messages);
@@ -317,7 +323,9 @@ public class RdvMedecinsController {
 
     //Un agenda via l'id du medecin et le jour
     @RequestMapping(value= "/getAgendaMedecinJour/{idMedecin}/{jour}", method= RequestMethod.GET)
-    public Reponse getAgendaMedecinJour(@PathVariable("idMedecin") long idMedecin, @PathVariable("jour") String jour){
+    public Reponse getAgendaMedecinJour(@PathVariable("idMedecin") long idMedecin, @PathVariable("jour") String jour, HttpServletResponse response){
+        //entêtes CORS
+        rdvMedecinsCorsController.getAgendaMedecinJour(response);
         //état de l'application
         if( messages != null){
             return new Reponse(-1, messages);

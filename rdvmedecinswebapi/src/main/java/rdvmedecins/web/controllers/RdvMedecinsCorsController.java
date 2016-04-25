@@ -23,7 +23,9 @@ public class RdvMedecinsCorsController {
             //on fixe le header CORS
             response.addHeader("Access-Control-Allow-Origin", "*");
             //on autorise le header [Authorization]
-            response.addHeader("Access-Control-Allow-Headers", "Authorization");
+            response.addHeader("Access-Control-Allow-Headers", "accept, authorization, content-type");
+            //on authorise le POST
+            response.addHeader("Access-Control-Allow-Methods", "POST");
         }
     }
 
@@ -32,4 +34,20 @@ public class RdvMedecinsCorsController {
     public void getAllMedecins(HttpServletResponse response){
         sendOptions(response);
     }
+
+    //liste des clients
+    @RequestMapping(value = "/getAllClients", method = RequestMethod.OPTIONS)
+    public void getAllClients(HttpServletResponse response) { sendOptions(response);}
+
+    //agenda du médecin
+    @RequestMapping(value = "/getAgendaMedecinJour/{idMedecin}/{jour}", method = RequestMethod.OPTIONS)
+    public void getAgendaMedecinJour(HttpServletResponse response) { sendOptions(response);}
+
+    //ajout de rv
+    @RequestMapping(value = "/ajouterRv", method = RequestMethod.OPTIONS)
+    public void ajouterRv(HttpServletResponse response) { sendOptions(response);}
+
+    //supprimer rv
+    @RequestMapping(value = "/supprimerRv", method = RequestMethod.OPTIONS)
+    public void supprimerRv(HttpServletResponse response) { sendOptions(response);}
 }
