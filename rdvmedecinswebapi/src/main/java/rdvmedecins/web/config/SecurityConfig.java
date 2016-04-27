@@ -1,9 +1,11 @@
 package rdvmedecins.web.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import rdvmedecins.security.AppUserDetailsService;
@@ -11,6 +13,8 @@ import rdvmedecins.security.AppUserDetailsService;
 /**
  * Created by GuillaumeD on 21/04/2016.
  */
+@EnableAutoConfiguration
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
     private AppUserDetailsService appUserDetailsService;
@@ -23,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception{
+    protected void configure(HttpSecurity http) throws Exception {
         // CSRF
         http.csrf().disable();
         // le mot de passe est transmis par le header Authorization: Basic xxxx
@@ -31,6 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         // la méthode HTTP OPTIONS doit être autorisée pour tous
         http.authorizeRequests() //
                 .antMatchers(HttpMethod.OPTIONS, "/", "/**").permitAll();
+        // le dossier [app] est accessible à tous
+        http.authorizeRequests() //
+                .antMatchers(HttpMethod.GET, "/app", "/app/**").permitAll();
         // seul le rôle ADMIN peut utiliser l'application
         http.authorizeRequests() //
                 .antMatchers("/", "/**") // toutes les URL

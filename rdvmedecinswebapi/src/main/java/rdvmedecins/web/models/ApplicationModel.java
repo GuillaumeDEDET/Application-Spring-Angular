@@ -95,8 +95,8 @@ public class ApplicationModel implements IMetier {
     }
 
     @Override
-    public void supprimerRv(Rv rv) {
-        metier.supprimerRv(rv);
+    public void supprimerRv(long idRv) {
+        metier.supprimerRv(idRv);
     }
 
     @Override

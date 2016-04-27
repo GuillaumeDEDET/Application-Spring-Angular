@@ -7,6 +7,7 @@ import rdvmedecins.entities.Creneau;
 import rdvmedecins.entities.Rv;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -127,7 +128,7 @@ public class Static {
         //dictionnaire <String, Object>
         Map<String, Object> hash = new HashMap<String, Object>();
         hash.put("medecin", agenda.getMedecin());
-        hash.put("jour", agenda.getJour());
+        hash.put("jour", new SimpleDateFormat("yyyy-MM-dd").format(agenda.getJour()));
         List<Map<String, Object>> creneaux = new ArrayList<Map<String, Object>>();
         for(CreneauMedecinJour creneau : agenda.getCreneauxMedecinJour()){
             creneaux.add(getMapForCreneauMedecinJour(creneau));

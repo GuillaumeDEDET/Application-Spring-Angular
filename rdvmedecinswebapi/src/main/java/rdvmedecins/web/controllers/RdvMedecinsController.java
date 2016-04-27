@@ -310,10 +310,9 @@ public class RdvMedecinsController {
         if (reponse.getStatus() != 0){
             return reponse;
         }
-        Rv rv = (Rv) reponse.getData();
         //suppression du rv
         try {
-            application.supprimerRv(rv);
+            application.supprimerRv(idRv);
         } catch (Exception e1){
             return new Reponse(3, Static.getErreursForException(e1));
         }
@@ -324,32 +323,32 @@ public class RdvMedecinsController {
     //Un agenda via l'id du medecin et le jour
     @RequestMapping(value= "/getAgendaMedecinJour/{idMedecin}/{jour}", method= RequestMethod.GET)
     public Reponse getAgendaMedecinJour(@PathVariable("idMedecin") long idMedecin, @PathVariable("jour") String jour, HttpServletResponse response){
-        //entêtes CORS
+// entêtes CORS
         rdvMedecinsCorsController.getAgendaMedecinJour(response);
-        //état de l'application
-        if( messages != null){
+        // état de l'application
+        if (messages != null) {
             return new Reponse(-1, messages);
         }
-        //on vérifie la date
+        // on vérifie la date
         Date jourAgenda = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setLenient(false);
         try {
             jourAgenda = sdf.parse(jour);
-        } catch (ParseException e){
-            return new Reponse (3, new String[] { String.format("jour [%s] invalide", jour)});
+        } catch (ParseException e) {
+            return new Reponse(3, new String[] { String.format("jour [%s] invalide", jour) });
         }
-        //on récupère le médecin
+        // on récupère le médecin
         Reponse reponse = getMedecin(idMedecin);
-        if(reponse.getStatus() != 0){
+        if (reponse.getStatus() != 0) {
             return reponse;
         }
-        Medecin medecin = (Medecin) reponse.getData();
-        //on récupère son agenda
+        Medecin médecin = (Medecin) reponse.getData();
+        // on récupère son agenda
         AgendaMedecinJour agenda = null;
         try {
-            agenda = application.getAgendaMedecinJour(medecin.getId(), jourAgenda);
-        } catch(Exception e1){
+            agenda = application.getAgendaMedecinJour(médecin.getId(), jourAgenda);
+        } catch (Exception e1) {
             return new Reponse(4, Static.getErreursForException(e1));
         }
         // ok
